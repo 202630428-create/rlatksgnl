@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘 뭐 먹지? - 저녁 메뉴 추천기</title>
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 350px;
+        }
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .result-box {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ff6b6b;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #ff6b6b;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background-color: #fff0f0;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-pick {
+            background-color: #ff6b6b;
+            color: white;
+            margin-bottom: 15px;
+        }
+        .btn-pick:hover {
+            background-color: #ee5253;
+        }
+        .input-group {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+        .btn-add {
+            width: auto;
+            background-color: #48dbfb;
+            color: white;
+            padding: 10px 15px;
+        }
+        .btn-add:hover {
+            background-color: #0abde3;
+        }
+        .menu-list {
+            list-style: none;
+            padding: 0;
+            max-height: 150px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .btn-del {
+            background: none;
+            border: none;
+            color: #ff4d4d;
+            cursor: pointer;
+            font-weight: bold;
+            width: auto;
+            padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🍽️ 오늘 저녁 뭐 먹지?</h1>
+    <div class="result-box" id="result">버튼을 눌러보세요!</div>
+    <button class="btn-pick" onclick="pickMenu()">메뉴 추천받기</button>
+
+    <div class="input-group">
+        <input type="text" id="menuInput" placeholder="새 메뉴 입력" onkeypress="if(event.keyCode==13) addMenu()">
+        <button class="btn-add" onclick="addMenu()">추가</button>
+    </div>
+
+    <ul class="menu-list" id="menuList"></ul>
+</div>
+
+<script>
+    let menus = ["김치찌개", "삼겹살", "초밥", "치킨", "피자", "제육볶음", "파스타", "떡볶이", "마라탕", "돈까스"];
+
+    function renderList() {
+        const list = document.getElementById('menuList');
+        list.innerHTML = '';
+        menus.forEach((menu, index) => {
+            const li = document.createElement('li');
+            li.className = 'menu-item';
+            li.innerHTML = `
+                <span>${menu}</span>
+                <button class="btn-del" onclick="deleteMenu(${index})">✕</button>
+            `;
+            list.appendChild(li);
+        });
+    }
+
+    function pickMenu() {
+        if (menus.length === 0) {
+            document.getElementById('result').innerText = "메뉴를 추가해주세요!";
+            return;
+        }
+        const resultBox = document.getElementById('result');
+        let count = 0;
+        
+        // 애니메이션 효과
+        const interval = setInterval(() => {
+            const randomTemp = menus[Math.floor(Math.random() * menus.length)];
+            resultBox.innerText = randomTemp;
+            count++;
+            if (count > 10) {
+                clearInterval(interval);
+                const finalPick = menus[Math.floor(Math.random() * menus.length)];
+                resultBox.innerText = finalPick;
+            }
+        }, 80);
+    }
+
+    function addMenu() {
+        const input = document.getElementById('menuInput');
+        const value = input.value.trim();
+        if (value) {
+            menus.push(value);
+            input.value = '';
+            renderList();
+        }
+    }
+
+    function deleteMenu(index) {
+        menus.splice(index, 1);
+        renderList();
+    }
+
+    // 초기 목록 렌더링
+    renderList();
+</script>
+
+</body>
+</html>
